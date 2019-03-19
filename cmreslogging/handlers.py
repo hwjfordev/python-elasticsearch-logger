@@ -328,8 +328,8 @@ class CMRESHandler(logging.Handler):
         rec = self.es_additional_fields.copy()
         for key, value in record.__dict__.items():
             if key not in CMRESHandler.__LOGGING_FILTER_FIELDS:
-                if key == "args":
-                    value = tuple(str(arg) for arg in value)
+                if key == "args" and type(value) is tuple:
+                    value = { 'a'+str(i):v for i, v in enumerate(value)}
                 rec[key] = "" if value is None else value
         rec[self.default_timestamp_field_name] = self.__get_es_datetime_str(record.created)
         with self._buffer_lock:
